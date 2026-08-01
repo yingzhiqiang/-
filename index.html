@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>黑洞资产终端 | BlackHole Asset Terminal</title>
+    <title>黑洞资产终端 | BlackHole Capital</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <!-- 头部黑洞品牌区 -->
+        <!-- 头部 Logo 区域 -->
         <header class="header">
             <div class="logo">
                 <div class="blackhole-icon"></div>
@@ -23,7 +23,7 @@
             </div>
         </header>
 
-        <!-- 核心计算区 -->
+        <!-- 本月定投计算器 -->
         <section class="calculator-card">
             <h2>💰 本月定投计算器 (HKD)</h2>
             <div class="input-group">
@@ -35,24 +35,30 @@
             </div>
         </section>
 
-        <!-- 资产配置表 -->
+        <!-- 资产配置表 与 市场行情快照 -->
         <section class="table-card">
             <h2>📊 资产配置与智能定投分配</h2>
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>标的代码</th>
-                            <th>标的全称</th>
-                            <th>目标占比</th>
-                            <th>实际占比 / 偏差</th>
-                            <th>拟定投金额 (HKD)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="assetTableBody">
-                        <!-- JS 动态渲染 -->
-                    </tbody>
-                </table>
+            <div class="table-content-wrapper">
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>标的代码</th>
+                                <th>标的全称</th>
+                                <th>目标占比</th>
+                                <th>实际占比 / 偏差</th>
+                                <th>拟定投金额 (HKD)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="assetTableBody">
+                            <!-- JS 动态渲染 -->
+                        </tbody>
+                    </table>
+                </div>
+                <!-- 独立市场行情快照区域 -->
+                <div class="chart-placeholder">
+                    <!-- JS 动态渲染市场行情 (WTD) -->
+                </div>
             </div>
         </section>
 
