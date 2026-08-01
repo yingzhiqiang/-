@@ -9,10 +9,10 @@
 </head>
 <body>
     <div class="container">
-        <!-- 头部 -->
+        <!-- 头部黑洞品牌区 -->
         <header class="header">
             <div class="logo">
-                <span class="icon">🌌</span>
+                <div class="blackhole-icon"></div>
                 <h1>黑洞资产终端 <span>BlackHole Capital</span></h1>
             </div>
             <div class="actions">
@@ -23,19 +23,19 @@
             </div>
         </header>
 
-        <!-- 核心计算与分配区 -->
+        <!-- 核心计算区 -->
         <section class="calculator-card">
             <h2>💰 本月定投计算器 (HKD)</h2>
             <div class="input-group">
                 <label for="monthlyBudget">本月拟投入资金 (HKD)：</label>
                 <div class="input-wrapper">
                     <span class="currency">HK$</span>
-                    <input type="number" id="monthlyBudget" value="10000" placeholder="请输入港币金额">
+                    <input type="number" id="monthlyBudget" value="3000" placeholder="请输入港币金额">
                 </div>
             </div>
         </section>
 
-        <!-- 资产配置主表格 -->
+        <!-- 资产配置表 -->
         <section class="table-card">
             <h2>📊 资产配置与智能定投分配</h2>
             <div class="table-responsive">
@@ -60,7 +60,6 @@
         <section class="intel-card">
             <h2>📰 美股巨头财报与情绪情报</h2>
             <div class="earnings-grid">
-                <!-- JS 动态加载 earnings.json -->
                 <div class="intel-loading">正在加载最新财报情报...</div>
             </div>
         </section>
