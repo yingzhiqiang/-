@@ -1,0 +1,36 @@
+name: Auto Update Earnings Intel
+
+on:
+  schedule:
+    # 自动定时运行：每周六凌晨 0:00 (UTC) 自动运行更新（美股周五收盘后）
+    - cron: '0 0 * * 6'
+  workflow_dispatch: # 允许在 GitHub 网页界面随时手动点击运行
+
+jobs:
+  update-intel:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v3
+
+      - name: 设置 Python 环境
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: 安装依赖
+        run: |
+          python -m pip install --upgrade pip
+          pip install google-generativeai
+
+      - name: 运行 AI 财报生成脚本
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python update_earnings.py
+
+      - name: 自动提交并推送更新回仓库
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add earnings.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "bot: 自动更新美股巨头财报情报" && git push)
