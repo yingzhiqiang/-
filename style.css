@@ -6,26 +6,34 @@
 }
 
 body {
-    background-color: #0b0d12;
+    background-color: #05070a;
+    background-image: 
+        radial-gradient(circle at 50% 10%, rgba(88, 166, 255, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 50% 30%, rgba(163, 113, 247, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 50% 80%, rgba(0, 0, 0, 0.9) 0%, #05070a 100%);
+    background-attachment: fixed;
     color: #c9d1d9;
-    padding: 20px;
+    padding: 24px;
+    min-height: 100vh;
 }
 
 .container {
     max-width: 1000px;
     margin: 0 auto;
+    position: relative;
+    z-index: 1;
 }
 
-/* 🌀 动态黑洞动画 Icon */
+/* 🌀 昨晚版发光黑洞图标 */
 .blackhole-icon {
     width: 32px;
     height: 32px;
     border-radius: 50%;
     background: #000;
-    box-shadow: 0 0 12px 3px rgba(88, 166, 255, 0.8), 0 0 24px 6px rgba(163, 113, 247, 0.4);
+    box-shadow: 0 0 12px 3px rgba(88, 166, 255, 0.8), 0 0 24px 6px rgba(163, 113, 247, 0.5);
     position: relative;
-    animation: rotateBlackhole 10s linear infinite;
     display: inline-block;
+    animation: rotateBlackhole 10s linear infinite;
 }
 
 .blackhole-icon::after {
@@ -33,7 +41,7 @@ body {
     position: absolute;
     top: -3px; left: -3px; right: -3px; bottom: -3px;
     border-radius: 50%;
-    border: 2px dashed rgba(88, 166, 255, 0.6);
+    border: 2px dashed rgba(88, 166, 255, 0.7);
     animation: spinAccretion 6s linear infinite reverse;
 }
 
@@ -54,7 +62,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding-bottom: 20px;
-    border-bottom: 1px solid #21262d;
+    border-bottom: 1px solid rgba(48, 54, 61, 0.6);
     margin-bottom: 24px;
 }
 
@@ -70,6 +78,7 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
+    letter-spacing: 0.5px;
 }
 
 .logo span {
@@ -79,7 +88,8 @@ body {
 }
 
 .btn-import {
-    background-color: #161b22;
+    background-color: rgba(22, 27, 34, 0.8);
+    backdrop-filter: blur(8px);
     border: 1px solid #30363d;
     color: #c9d1d9;
     padding: 8px 16px;
@@ -91,22 +101,26 @@ body {
 
 .btn-import:hover {
     background-color: #21262d;
-    border-color: #8b949e;
+    border-color: #58a6ff;
+    color: #58a6ff;
 }
 
-/* Cards */
+/* 玻璃拟态卡片容器 */
 .calculator-card, .table-card, .intel-card {
-    background-color: #161b22;
-    border: 1px solid #21262d;
-    border-radius: 8px;
-    padding: 20px;
+    background: rgba(16, 21, 30, 0.75);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(48, 54, 61, 0.7);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    border-radius: 12px;
+    padding: 24px;
     margin-bottom: 24px;
 }
 
 h2 {
     font-size: 16px;
     color: #f0f6fc;
-    margin-bottom: 16px;
+    margin-bottom: 18px;
+    letter-spacing: 0.3px;
 }
 
 /* Calculator */
@@ -114,6 +128,7 @@ h2 {
     display: block;
     margin-bottom: 8px;
     font-size: 14px;
+    color: #8b949e;
 }
 
 .input-wrapper {
@@ -137,13 +152,15 @@ h2 {
     color: #58a6ff;
     font-size: 18px;
     font-weight: bold;
-    padding: 8px 12px 8px 50px;
-    border-radius: 6px;
+    padding: 10px 12px 10px 50px;
+    border-radius: 8px;
     outline: none;
+    transition: 0.2s;
 }
 
 .input-wrapper input:focus {
     border-color: #58a6ff;
+    box-shadow: 0 0 10px rgba(88, 166, 255, 0.3);
 }
 
 /* Table */
@@ -158,8 +175,8 @@ table {
 }
 
 th, td {
-    padding: 12px;
-    border-bottom: 1px solid #21262d;
+    padding: 14px 12px;
+    border-bottom: 1px solid rgba(33, 38, 45, 0.8);
     font-size: 14px;
 }
 
@@ -177,7 +194,7 @@ th {
 .progress-container {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
 }
 
 .progress-bar {
@@ -190,17 +207,18 @@ th {
 
 .progress-fill {
     height: 100%;
-    background-color: #238636;
+    background: linear-gradient(90deg, #238636, #2ea44f);
 }
 
 .tag {
     font-size: 12px;
-    padding: 2px 6px;
+    padding: 2px 8px;
     border-radius: 4px;
+    font-weight: 500;
 }
 
-.tag-under { background-color: rgba(46, 160, 67, 0.15); color: #3fb950; }
-.tag-over { background-color: rgba(248, 81, 73, 0.15); color: #f85149; }
+.tag-under { background-color: rgba(46, 160, 67, 0.15); color: #3fb950; border: 1px solid rgba(63, 185, 80, 0.3); }
+.tag-over { background-color: rgba(248, 81, 73, 0.15); color: #f85149; border: 1px solid rgba(248, 81, 73, 0.3); }
 
 /* Earnings Intel */
 .earnings-grid {
@@ -210,17 +228,23 @@ th {
 }
 
 .intel-item {
-    background-color: #0d1117;
+    background-color: rgba(13, 17, 23, 0.8);
     border: 1px solid #21262d;
-    border-radius: 6px;
-    padding: 14px;
+    border-radius: 8px;
+    padding: 16px;
+    transition: 0.2s;
+}
+
+.intel-item:hover {
+    border-color: #30363d;
+    transform: translateY(-2px);
 }
 
 .intel-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
 
 .company {
@@ -232,6 +256,7 @@ th {
     font-size: 12px;
     padding: 2px 8px;
     border-radius: 12px;
+    font-weight: 500;
 }
 
 .badge.bullish { background-color: rgba(46, 160, 67, 0.2); color: #3fb950; }
@@ -241,5 +266,5 @@ th {
 .intel-desc {
     font-size: 13px;
     color: #8b949e;
-    line-height: 1.5;
+    line-height: 1.6;
 }
