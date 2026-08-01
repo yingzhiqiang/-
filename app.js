@@ -8,7 +8,7 @@ let assetConfig = [
 
 document.addEventListener('DOMContentLoaded', async () => {
     initCalculator();
-    await loadDataFromJSON(); // 动态加载 Excel 导出的最新持仓与行情
+    await loadDataFromJSON(); // 动态加载最新持仓与行情
     renderAssetTable();
 });
 
@@ -21,24 +21,21 @@ function initCalculator() {
     }
 }
 
-// 核心：读取 GitHub Actions 定时更新的 earnings.json
+// 读取 GitHub Actions 更新的 earnings.json
 async function loadDataFromJSON() {
     try {
         const response = await fetch('./earnings.json');
         if (response.ok) {
             const data = await response.json();
             
-            // 1. 如果有来自 Excel 的持仓配置，替换本地变量
             if (data.portfolio && data.portfolio.length > 0) {
                 assetConfig = data.portfolio;
             }
 
-            // 2. 渲染行情快照
             if (data.market_data) {
                 renderMarketCards(data.market_data);
             }
 
-            // 3. 渲染财报情报
             if (data.intel) {
                 renderEarningsIntel(data.intel);
             }
@@ -48,7 +45,7 @@ async function loadDataFromJSON() {
     }
 }
 
-// 智能纠偏与表格渲染
+// 智能定投算法（完全同步 pet.py 逻辑）
 function renderAssetTable() {
     const budget = parseFloat(document.getElementById('monthlyBudget')?.value) || 0;
     const tbody = document.getElementById('assetTableBody');
@@ -56,30 +53,94 @@ function renderAssetTable() {
 
     tbody.innerHTML = '';
 
-    let totalDeficit = 0;
-    const itemsWithDeficit = assetConfig.map(item => {
-        const gap = item.target - item.current;
-        const deficit = gap > 0 ? gap : 0;
-        totalDeficit += deficit;
-        return { ...item, gap, deficit };
+    // 1. 获取每个 ETF 的偏离度 % (当前 - 目标)
+    const devs = {};
+    assetConfig.forEach(item => {
+        devs[item.ticker] = item.current - item.target;
     });
 
-    itemsWithDeficit.forEach(item => {
-        let allocatedAmount = 0;
-        
-        if (totalDeficit > 0) {
-            allocatedAmount = budget * (item.deficit / totalDeficit);
-        } else {
-            allocatedAmount = budget * (item.target / 100);
+    // 2. 计算各标的的动态权重
+    const BASE_WEIGHT = 10;
+    const weights = {};
+    let totalWeight = 0;
+
+    assetConfig.forEach(item => {
+        const name = item.ticker;
+        const dev = devs[name] || 0;
+
+        if (name === "TQQQ") {
+            // TQQQ 特殊处理：直接停掉
+            weights[name] = 0;
+            return;
         }
 
-        let tagHtml = '';
-        if (item.gap > 0.5) {
-            tagHtml = `<span class="tag tag-under">低配 ${item.gap.toFixed(1)}%</span>`;
-        } else if (item.gap < -0.5) {
-            tagHtml = `<span class="tag tag-over">超配 +${Math.abs(item.gap).toFixed(1)}%</span>`;
+        // 偏离度为负表示低配，取反 (-dev) 后变为正加成
+        let weight = BASE_WEIGHT + (-dev);
+
+        // 权重限制：最低 0.5（保底定投），最高 30（防止极端过度倾斜）
+        weight = Math.max(0.5, weight);
+        weight = Math.min(30, weight);
+
+        weights[name] = weight;
+        totalWeight += weight;
+    });
+
+    // 3. 按权重分配预算
+    const allocation = {};
+
+    assetConfig.forEach(item => {
+        const name = item.ticker;
+        if (name === "TQQQ") {
+            allocation[name] = 0;
+            return;
+        }
+
+        if (totalWeight > 0) {
+            allocation[name] = Math.floor(budget * weights[name] / totalWeight);
         } else {
-            tagHtml = `<span class="tag" style="background: rgba(110,118,129,0.2); color: #8b949e;">平衡</span>`;
+            allocation[name] = 0;
+        }
+    });
+
+    // 4. 修正四舍五入尾差（把差额补到权重最大的标的上）
+    let totalAllocated = 0;
+    assetConfig.forEach(item => {
+        if (item.ticker !== "TQQQ") {
+            totalAllocated += allocation[item.ticker] || 0;
+        }
+    });
+
+    const diff = Math.round(budget - totalAllocated);
+    if (diff !== 0) {
+        let maxTicker = null;
+        let maxWeight = -1;
+        assetConfig.forEach(item => {
+            if (item.ticker !== "TQQQ" && weights[item.ticker] > maxWeight) {
+                maxWeight = weights[item.ticker];
+                maxTicker = item.ticker;
+            }
+        });
+        if (maxTicker) {
+            allocation[maxTicker] = (allocation[maxTicker] || 0) + diff;
+        }
+    }
+
+    // 5. 渲染 HTML 表格
+    assetConfig.forEach(item => {
+        const name = item.ticker;
+        const dev = devs[name] || 0;
+        const allocatedAmount = allocation[name] || 0;
+
+        // 状态标签
+        let tagHtml = '';
+        if (name === "TQQQ") {
+            tagHtml = `<span class="tag" style="background: rgba(248,81,73,0.15); color: #f85149;">暂停定投</span>`;
+        } else if (dev < -5) {
+            tagHtml = `<span class="tag tag-under">低配 ${Math.abs(dev).toFixed(1)}%</span>`;
+        } else if (dev > 5) {
+            tagHtml = `<span class="tag tag-over">高配 +${dev.toFixed(1)}%</span>`;
+        } else {
+            tagHtml = `<span class="tag" style="background: rgba(110,118,129,0.2); color: #8b949e;">正常</span>`;
         }
 
         const tr = document.createElement('tr');
@@ -90,14 +151,14 @@ function renderAssetTable() {
             <td>
                 <div class="progress-container">
                     <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${Math.min(item.current, 100)}%; background-color: ${item.gap > 0 ? '#3fb950' : '#f85149'};"></div>
+                        <div class="progress-fill" style="width: ${Math.min(item.current, 100)}%; background-color: ${dev <= 0 ? '#3fb950' : '#f85149'};"></div>
                     </div>
                     <span class="progress-text">${item.current}%</span>
                     ${tagHtml}
                 </div>
             </td>
             <td style="color: ${allocatedAmount > 0 ? '#3fb950' : '#8b949e'}; font-weight: bold;">
-                HK$ ${Math.round(allocatedAmount).toLocaleString()}
+                HK$ ${allocatedAmount.toLocaleString()}
             </td>
         `;
         tbody.appendChild(tr);
