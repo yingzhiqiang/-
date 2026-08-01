@@ -1,20 +1,17 @@
-// 核心配置文件：定投分配与行情展示标的
-const assetConfig = [
-    { ticker: 'VOO', name: '标普500 ETF', target: 40, current: 35 },
-    { ticker: 'QQQM', name: '纳斯达克100 ETF', target: 30, current: 28 },
-    { ticker: 'BOTZ', name: 'AI与机器人 ETF', target: 15, current: 18 },
-    { ticker: 'TQQQ', name: '3倍做多纳指 ETF', target: 15, current: 19 }
+// 默认持仓兜底
+let assetConfig = [
+    { ticker: 'VOO', name: '标普500 ETF', target: 40.0, current: 17.4 },
+    { ticker: 'QQQM', name: '纳斯达克100 ETF', target: 35.0, current: 70.1 },
+    { ticker: 'BOTZ', name: 'AI与机器人 ETF', target: 15.0, current: 7.4 },
+    { ticker: 'TQQQ', name: '3倍做多纳指 ETF', target: 5.0, current: 5.1 }
 ];
 
-// 页面加载完成后初始化
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     initCalculator();
+    await loadDataFromJSON(); // 动态加载 Excel 导出的最新持仓与行情
     renderAssetTable();
-    fetchMarketData();  // 获取固定标的的市场行情 (WTD)
-    fetchEarningsIntel(); // 获取美股财报情报
 });
 
-// 1. 定投计算器逻辑
 function initCalculator() {
     const budgetInput = document.getElementById('monthlyBudget');
     if (budgetInput) {
@@ -24,7 +21,34 @@ function initCalculator() {
     }
 }
 
-// 2. 渲染资产配置表
+// 核心：读取 GitHub Actions 定时更新的 earnings.json
+async function loadDataFromJSON() {
+    try {
+        const response = await fetch('./earnings.json');
+        if (response.ok) {
+            const data = await response.json();
+            
+            // 1. 如果有来自 Excel 的持仓配置，替换本地变量
+            if (data.portfolio && data.portfolio.length > 0) {
+                assetConfig = data.portfolio;
+            }
+
+            // 2. 渲染行情快照
+            if (data.market_data) {
+                renderMarketCards(data.market_data);
+            }
+
+            // 3. 渲染财报情报
+            if (data.intel) {
+                renderEarningsIntel(data.intel);
+            }
+        }
+    } catch (e) {
+        console.log('读取 earnings.json 失败，使用本地预设数据');
+    }
+}
+
+// 智能纠偏与表格渲染
 function renderAssetTable() {
     const budget = parseFloat(document.getElementById('monthlyBudget')?.value) || 0;
     const tbody = document.getElementById('assetTableBody');
@@ -32,17 +56,30 @@ function renderAssetTable() {
 
     tbody.innerHTML = '';
 
-    assetConfig.forEach(item => {
-        const diff = item.current - item.target;
-        const allocatedAmount = (budget * (item.target / 100)).toFixed(0);
+    let totalDeficit = 0;
+    const itemsWithDeficit = assetConfig.map(item => {
+        const gap = item.target - item.current;
+        const deficit = gap > 0 ? gap : 0;
+        totalDeficit += deficit;
+        return { ...item, gap, deficit };
+    });
+
+    itemsWithDeficit.forEach(item => {
+        let allocatedAmount = 0;
         
-        let tagHtml = '';
-        if (diff < 0) {
-            tagHtml = `<span class="tag tag-under">低配 ${Math.abs(diff).toFixed(1)}%</span>`;
-        } else if (diff > 0) {
-            tagHtml = `<span class="tag tag-over">超配 +${diff.toFixed(1)}%</span>`;
+        if (totalDeficit > 0) {
+            allocatedAmount = budget * (item.deficit / totalDeficit);
         } else {
-            tagHtml = `<span class="tag">标准</span>`;
+            allocatedAmount = budget * (item.target / 100);
+        }
+
+        let tagHtml = '';
+        if (item.gap > 0.5) {
+            tagHtml = `<span class="tag tag-under">低配 ${item.gap.toFixed(1)}%</span>`;
+        } else if (item.gap < -0.5) {
+            tagHtml = `<span class="tag tag-over">超配 +${Math.abs(item.gap).toFixed(1)}%</span>`;
+        } else {
+            tagHtml = `<span class="tag" style="background: rgba(110,118,129,0.2); color: #8b949e;">平衡</span>`;
         }
 
         const tr = document.createElement('tr');
@@ -53,45 +90,20 @@ function renderAssetTable() {
             <td>
                 <div class="progress-container">
                     <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${Math.min(item.current, 100)}%;"></div>
+                        <div class="progress-fill" style="width: ${Math.min(item.current, 100)}%; background-color: ${item.gap > 0 ? '#3fb950' : '#f85149'};"></div>
                     </div>
-                    <span>${item.current}%</span>
+                    <span class="progress-text">${item.current}%</span>
                     ${tagHtml}
                 </div>
             </td>
-            <td style="color: #3fb950; font-weight: bold;">HK$ ${parseInt(allocatedAmount).toLocaleString()}</td>
+            <td style="color: ${allocatedAmount > 0 ? '#3fb950' : '#8b949e'}; font-weight: bold;">
+                HK$ ${Math.round(allocatedAmount).toLocaleString()}
+            </td>
         `;
         tbody.appendChild(tr);
     });
 }
 
-// 3. 直接展示市场行情 (WTD + 实时价格)
-async function fetchMarketData() {
-    // 预设固定标的的最新市场行情数据 (备用/初始化)
-    const marketSnapshot = {
-        'VOO': { price: '$510.25', wtd: '+1.85%', bullish: true },
-        'QQQM': { price: '$188.40', wtd: '+2.10%', bullish: true },
-        'BOTZ': { price: '$31.15', wtd: '-0.42%', bullish: false },
-        'TQQQ': { price: '$65.88', wtd: '+6.32%', bullish: true }
-    };
-
-    try {
-        // 从 earnings.json 读取每周由后台更新的行情快照（如有）
-        const response = await fetch('./earnings.json');
-        if (response.ok) {
-            const data = await response.json();
-            if (data.market_data) {
-                Object.assign(marketSnapshot, data.market_data);
-            }
-        }
-    } catch (e) {
-        console.log('使用内置市场行情快照数据');
-    }
-
-    renderMarketCards(marketSnapshot);
-}
-
-// 渲染右侧的市场行情卡片
 function renderMarketCards(marketData) {
     const container = document.querySelector('.chart-placeholder');
     if (!container) return;
@@ -120,66 +132,26 @@ function renderMarketCards(marketData) {
     container.innerHTML = html;
 }
 
-// 4. 抓取美股财报情报 (来自 earnings.json)
-async function fetchEarningsIntel() {
+function renderEarningsIntel(intelList) {
     const container = document.querySelector('.earnings-grid');
     if (!container) return;
 
-    try {
-        const response = await fetch('./earnings.json');
-        if (!response.ok) throw new Error('Network error');
-        const data = await response.json();
+    container.innerHTML = '';
+    intelList.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'intel-item';
         
-        container.innerHTML = '';
-        const intelList = data.intel || data;
+        let badgeClass = 'neutral';
+        if (item.sentiment === '看涨' || item.sentiment === 'Bullish') badgeClass = 'bullish';
+        if (item.sentiment === '看跌' || item.sentiment === 'Bearish') badgeClass = 'bearish';
 
-        intelList.forEach(item => {
-            const card = document.createElement('div');
-            card.className = 'intel-item';
-            
-            let badgeClass = 'neutral';
-            if (item.sentiment === '看涨' || item.sentiment === 'Bullish') badgeClass = 'bullish';
-            if (item.sentiment === '看跌' || item.sentiment === 'Bearish') badgeClass = 'bearish';
-
-            card.innerHTML = `
-                <div class="intel-header">
-                    <span class="company">${item.company} (${item.ticker})</span>
-                    <span class="badge ${badgeClass}">${item.sentiment}</span>
-                </div>
-                <p class="intel-desc">${item.summary}</p>
-            `;
-            container.appendChild(card);
-        });
-    } catch (error) {
-        container.innerHTML = `
-            <div class="intel-item">
-                <div class="intel-header">
-                    <span class="company">微软 (MSFT)</span>
-                    <span class="badge bullish">看涨</span>
-                </div>
-                <p class="intel-desc">Azure 云业务增速超预期，AI Copilot 商业化加速，持续推动 QQQM 及大盘稳步上行。</p>
+        card.innerHTML = `
+            <div class="intel-header">
+                <span class="company">${item.company} (${item.ticker})</span>
+                <span class="badge ${badgeClass}">${item.sentiment}</span>
             </div>
-            <div class="intel-item">
-                <div class="intel-header">
-                    <span class="company">英伟达 (NVDA)</span>
-                    <span class="badge bullish">看涨</span>
-                </div>
-                <p class="intel-desc">Blackwell 架构芯片量产强劲，数据中心需求爆棚，直接拉动 BOTZ 与 TQQQ 的爆发力。</p>
-            </div>
-            <div class="intel-item">
-                <div class="intel-header">
-                    <span class="company">Meta (META)</span>
-                    <span class="badge bullish">看涨</span>
-                </div>
-                <p class="intel-desc">广告业务 AI 转化率大幅提升，Llama 生态巩固行业话语权，现金流表现优异。</p>
-            </div>
-            <div class="intel-item">
-                <div class="intel-header">
-                    <span class="company">亚马逊 (AMZN)</span>
-                    <span class="badge neutral">中性</span>
-                </div>
-                <p class="intel-desc">AWS 保持稳定增长，但下季度 AI 基础设施资本支出上调引发市场短期观望。</p>
-            </div>
+            <p class="intel-desc">${item.summary}</p>
         `;
-    }
+        container.appendChild(card);
+    });
 }
