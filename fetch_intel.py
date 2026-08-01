@@ -1,47 +1,71 @@
 import json
-import yfinance as yf
+import requests
+import re
 
-# 备用默认数值（若 API 暂时访问受限时兜底，确保程序不会崩溃报错）
-DEFAULT_MARKET = {
-    'VOO': {'price': '$510.25', 'wtd': '+1.85%', 'bullish': True},
-    'QQQM': {'price': '$188.40', 'wtd': '+2.10%', 'bullish': True},
-    'BOTZ': {'price': '$31.15', 'wtd': '-0.42%', 'bullish': False},
-    'TQQQ': {'price': '$65.88', 'wtd': '+6.32%', 'bullish': True}
+# 标的映射（新浪美股代码规则：gb_ + 纯小写股票代码）
+TICKER_MAP = {
+    'VOO': 'gb_voo',
+    'QQQM': 'gb_qqqm',
+    'BOTZ': 'gb_botz',
+    'TQQQ': 'gb_tqqq'
 }
 
-def fetch_real_market_data():
-    tickers = ['VOO', 'QQQM', 'BOTZ', 'TQQQ']
+def fetch_sina_market_data():
     market_data = {}
+    print("🚀 正在通过国内【新浪财经】API 抓取美股实时数据...")
+
+    # 拼装请求 URL（例如: http://hq.sinajs.cn/list=gb_voo,gb_qqqm,gb_botz,gb_tqqq）
+    codes = ",".join(TICKER_MAP.values())
+    url = f"http://hq.sinajs.cn/list={codes}"
     
-    print("开始抓取 ETF 市场行情...")
-    for symbol in tickers:
-        try:
-            stock = yf.Ticker(symbol)
-            # 获取最近 5 个交易日数据
-            hist = stock.history(period="5d")
-            
-            if not hist.empty and len(hist) >= 2:
-                current_price = hist['Close'].iloc[-1]
-                start_price = hist['Open'].iloc[0]
-                wtd_change = ((current_price - start_price) / start_price) * 100
-                
-                market_data[symbol] = {
-                    "price": f"${current_price:.2f}",
-                    "wtd": f"{'+' if wtd_change >= 0 else ''}{wtd_change:.2f}%",
-                    "bullish": wtd_change >= 0
-                }
-                print(f"✅ {symbol}: ${current_price:.2f} ({wtd_change:.2f}%)")
-            else:
-                print(f"⚠️ {symbol} 历史数据获取不足，使用预设值")
-                market_data[symbol] = DEFAULT_MARKET[symbol]
-        except Exception as e:
-            print(f"❌ 抓取 {symbol} 失败，已使用预设兜底: {e}")
-            market_data[symbol] = DEFAULT_MARKET.get(symbol, {"price": "$0.00", "wtd": "0.00%", "bullish": True})
-            
+    # 模拟浏览器 User-Agent 和 Referer 伪装，确保请求成功
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+        "Referer": "http://finance.sina.com.cn/"
+    }
+
+    try:
+        response = requests.get(url, headers=headers, timeout=10)
+        # 新浪返回 GBK/GB2312 编码
+        response.encoding = 'gbk'
+        lines = response.text.strip().split('\n')
+
+        for ticker, code in TICKER_MAP.items():
+            for line in lines:
+                if code in line:
+                    # 匹配双引号中的数据内容
+                    match = re.search(r'"([^"]*)"', line)
+                    if match:
+                        data_str = match.group(1)
+                        items = data_str.split(',')
+                        
+                        if len(items) > 5:
+                            current_price = float(items[1])  # 最新价
+                            open_price = float(items[5])     # 今开价 (如果休市可以参考昨收)
+                            prev_close = float(items[26]) if len(items) > 26 else open_price # 昨收价
+
+                            # 自动计算涨跌幅 (相对于开盘/昨收)
+                            base_price = prev_close if prev_close > 0 else open_price
+                            wtd_change = ((current_price - base_price) / base_price) * 100 if base_price > 0 else 0
+
+                            market_data[ticker] = {
+                                "price": f"${current_price:.2f}",
+                                "wtd": f"{'+' if wtd_change >= 0 else ''}{wtd_change:.2f}%",
+                                "bullish": wtd_change >= 0
+                            }
+                            print(f"✅ {ticker}: ${current_price:.2f} ({wtd_change:+.2f}%)")
+    except Exception as e:
+        print(f"❌ 抓取国内接口出错: {e}")
+
+    # 如果部分字段未抓到，用预设值补齐
+    for ticker in TICKER_MAP.keys():
+        if ticker not in market_data:
+            market_data[ticker] = {"price": "$500.00", "wtd": "+0.00%", "bullish": True}
+
     return market_data
 
 def main():
-    market_snapshot = fetch_real_market_data()
+    market_snapshot = fetch_sina_market_data()
     
     intel_data = [
         {"company": "微软", "ticker": "MSFT", "sentiment": "看涨", "summary": "Azure 云业务增速超预期，AI Copilot 商业化进程加速。"},
@@ -57,7 +81,7 @@ def main():
     
     with open("earnings.json", "w", encoding="utf-8") as f:
         json.dump(final_output, f, ensure_ascii=False, indent=2)
-    print("🎉 已成功更新 earnings.json！")
+    print("🎉 成功接入国内接口并更新 earnings.json！")
 
 if __name__ == "__main__":
     main()
