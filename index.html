@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>黑洞资产终端 | BlackHole Asset Terminal</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+        <header class="header">
+            <div class="logo">
+                <span class="icon">🌌</span>
+                <h1>黑洞资产终端 <span>BlackHole Capital</span></h1>
+            </div>
+            <div class="actions">
+                <label class="btn-import">
+                    📥 导入持仓 (CSV/Excel)
+                    <input type="file" id="fileInput" accept=".csv, .xlsx, .xls" hidden>
+                </label>
+            </div>
+        </header>
+
+        <!-- 核心计算与分配区 -->
+        <section class="calculator-card">
+            <h2>💰 本月定投计算器 (HKD)</h2>
+            <div class="input-group">
+                <label for="monthlyBudget">本月拟投入资金 (HKD)：</label>
+                <div class="input-wrapper">
+                    <span class="currency">HK$</span>
+                    <input type="number" id="monthlyBudget" value="10000" placeholder="请输入港币金额">
+                </div>
+            </div>
+        </section>
+
+        <!-- 资产配置主表格 -->
+        <section class="table-card">
+            <h2>📊 资产配置与智能定投分配</h2>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>标的代码</th>
+                            <th>标的全称</th>
+                            <th>目标占比</th>
+                            <th>实际占比 / 偏差</th>
+                            <th>拟定投金额 (HKD)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="assetTableBody">
+                        <!-- JS 动态渲染 -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 美股巨头财报情报 -->
+        <section class="intel-card">
+            <h2>📰 美股巨头财报与情绪情报</h2>
+            <div class="earnings-grid">
+                <!-- JS 动态加载 earnings.json -->
+                <div class="intel-loading">正在加载最新财报情报...</div>
+            </div>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
