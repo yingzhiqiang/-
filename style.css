@@ -7,10 +7,11 @@
 
 body {
     background-color: #05070a;
+    /* 漩涡黑洞星云背景 */
     background-image: 
-        radial-gradient(circle at 50% 10%, rgba(88, 166, 255, 0.12) 0%, transparent 40%),
-        radial-gradient(circle at 50% 30%, rgba(163, 113, 247, 0.08) 0%, transparent 50%),
-        radial-gradient(circle at 50% 80%, rgba(0, 0, 0, 0.9) 0%, #05070a 100%);
+        radial-gradient(circle at 50% 12%, rgba(88, 166, 255, 0.15) 0%, transparent 45%),
+        radial-gradient(circle at 50% 35%, rgba(163, 113, 247, 0.1) 0%, transparent 55%),
+        radial-gradient(circle at 50% 100%, #000000 0%, #05070a 100%);
     background-attachment: fixed;
     color: #c9d1d9;
     padding: 24px;
@@ -18,19 +19,17 @@ body {
 }
 
 .container {
-    max-width: 1000px;
+    max-width: 1200px;
     margin: 0 auto;
-    position: relative;
-    z-index: 1;
 }
 
-/* 🌀 昨晚版发光黑洞图标 */
+/* 黑洞动画 Icon */
 .blackhole-icon {
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     background: #000;
-    box-shadow: 0 0 12px 3px rgba(88, 166, 255, 0.8), 0 0 24px 6px rgba(163, 113, 247, 0.5);
+    box-shadow: 0 0 14px 4px rgba(88, 166, 255, 0.9), 0 0 28px 8px rgba(163, 113, 247, 0.5);
     position: relative;
     display: inline-block;
     animation: rotateBlackhole 10s linear infinite;
@@ -41,14 +40,13 @@ body {
     position: absolute;
     top: -3px; left: -3px; right: -3px; bottom: -3px;
     border-radius: 50%;
-    border: 2px dashed rgba(88, 166, 255, 0.7);
-    animation: spinAccretion 6s linear infinite reverse;
+    border: 2px dashed rgba(88, 166, 255, 0.8);
+    animation: spinAccretion 5s linear infinite reverse;
 }
 
 @keyframes rotateBlackhole {
-    0% { transform: rotate(0deg) scale(1); }
-    50% { transform: rotate(180deg) scale(1.05); }
-    100% { transform: rotate(360deg) scale(1); }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 @keyframes spinAccretion {
@@ -62,7 +60,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding-bottom: 20px;
-    border-bottom: 1px solid rgba(48, 54, 61, 0.6);
+    border-bottom: 1px solid rgba(48, 54, 61, 0.8);
     margin-bottom: 24px;
 }
 
@@ -77,8 +75,7 @@ body {
     color: #f0f6fc;
     display: flex;
     align-items: center;
-    gap: 8px;
-    letter-spacing: 0.5px;
+    gap: 10px;
 }
 
 .logo span {
@@ -88,8 +85,7 @@ body {
 }
 
 .btn-import {
-    background-color: rgba(22, 27, 34, 0.8);
-    backdrop-filter: blur(8px);
+    background-color: #161b22;
     border: 1px solid #30363d;
     color: #c9d1d9;
     padding: 8px 16px;
@@ -105,22 +101,21 @@ body {
     color: #58a6ff;
 }
 
-/* 玻璃拟态卡片容器 */
+/* 玻璃拟态卡片 (Glassmorphism) */
 .calculator-card, .table-card, .intel-card {
-    background: rgba(16, 21, 30, 0.75);
-    backdrop-filter: blur(12px);
+    background-color: rgba(22, 27, 34, 0.85);
+    backdrop-filter: blur(10px);
     border: 1px solid rgba(48, 54, 61, 0.7);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-    border-radius: 12px;
-    padding: 24px;
+    border-radius: 10px;
+    padding: 20px;
     margin-bottom: 24px;
+    box-shadow: 0 4px 30px rgba(0,0,0,0.5);
 }
 
 h2 {
     font-size: 16px;
     color: #f0f6fc;
-    margin-bottom: 18px;
-    letter-spacing: 0.3px;
+    margin-bottom: 16px;
 }
 
 /* Calculator */
@@ -141,7 +136,7 @@ h2 {
     left: 12px;
     top: 50%;
     transform: translateY(-50%);
-    color: #8b949e;
+    color: #58a6ff;
     font-weight: 600;
 }
 
@@ -152,15 +147,28 @@ h2 {
     color: #58a6ff;
     font-size: 18px;
     font-weight: bold;
-    padding: 10px 12px 10px 50px;
-    border-radius: 8px;
+    padding: 8px 12px 8px 50px;
+    border-radius: 6px;
     outline: none;
-    transition: 0.2s;
 }
 
 .input-wrapper input:focus {
     border-color: #58a6ff;
-    box-shadow: 0 0 10px rgba(88, 166, 255, 0.3);
+    box-shadow: 0 0 8px rgba(88, 166, 255, 0.4);
+}
+
+/* Table and Chart Wrapper */
+.table-content-wrapper {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+    align-items: start;
+}
+
+@media (max-width: 868px) {
+    .table-content-wrapper {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* Table */
@@ -175,7 +183,7 @@ table {
 }
 
 th, td {
-    padding: 14px 12px;
+    padding: 12px;
     border-bottom: 1px solid rgba(33, 38, 45, 0.8);
     font-size: 14px;
 }
@@ -190,11 +198,24 @@ th {
     color: #58a6ff;
 }
 
+/* Chart Placeholder / 行情区域 */
+.chart-placeholder {
+    background-color: #0d1117;
+    border: 1px solid rgba(48, 54, 61, 0.8);
+    border-radius: 8px;
+    min-height: 280px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    position: relative;
+    overflow: hidden;
+}
+
 /* Progress bar & badges */
 .progress-container {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
 }
 
 .progress-bar {
@@ -207,14 +228,13 @@ th {
 
 .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #238636, #2ea44f);
+    background-color: #238636;
 }
 
 .tag {
     font-size: 12px;
-    padding: 2px 8px;
+    padding: 2px 6px;
     border-radius: 4px;
-    font-weight: 500;
 }
 
 .tag-under { background-color: rgba(46, 160, 67, 0.15); color: #3fb950; border: 1px solid rgba(63, 185, 80, 0.3); }
@@ -228,23 +248,17 @@ th {
 }
 
 .intel-item {
-    background-color: rgba(13, 17, 23, 0.8);
-    border: 1px solid #21262d;
-    border-radius: 8px;
-    padding: 16px;
-    transition: 0.2s;
-}
-
-.intel-item:hover {
-    border-color: #30363d;
-    transform: translateY(-2px);
+    background-color: #0d1117;
+    border: 1px solid rgba(48, 54, 61, 0.8);
+    border-radius: 6px;
+    padding: 14px;
 }
 
 .intel-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .company {
@@ -256,7 +270,6 @@ th {
     font-size: 12px;
     padding: 2px 8px;
     border-radius: 12px;
-    font-weight: 500;
 }
 
 .badge.bullish { background-color: rgba(46, 160, 67, 0.2); color: #3fb950; }
@@ -266,5 +279,5 @@ th {
 .intel-desc {
     font-size: 13px;
     color: #8b949e;
-    line-height: 1.6;
+    line-height: 1.5;
 }
