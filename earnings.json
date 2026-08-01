@@ -1,32 +1,50 @@
-[
-  {
-    "ticker": "MSFT",
-    "company": "微软",
-    "sentiment": "bullish",
-    "summary": "Azure 云业务增速超预期，AI Copilot 商业化加速，持续推动 QQQM 及大盘稳步上行。"
+{
+  "market_data": {
+    "VOO": {
+      "price": "$686.65",
+      "wtd": "+0.71%",
+      "bullish": true
+    },
+    "QQQM": {
+      "price": "$283.29",
+      "wtd": "+0.69%",
+      "bullish": true
+    },
+    "BOTZ": {
+      "price": "$35.22",
+      "wtd": "+0.92%",
+      "bullish": true
+    },
+    "TQQQ": {
+      "price": "$64.62",
+      "wtd": "+2.09%",
+      "bullish": true
+    }
   },
-  {
-    "ticker": "NVDA",
-    "company": "英伟达",
-    "sentiment": "bullish",
-    "summary": "Blackwell 架构芯片量产强劲，数据中心需求爆棚，直接拉动 BOTZ 与 TQQQ 的爆发力。"
-  },
-  {
-    "ticker": "META",
-    "company": "Meta",
-    "sentiment": "bullish",
-    "summary": "广告业务 AI 转化率大幅提升，Llama 生态巩固行业话语权，现金流表现优异。"
-  },
-  {
-    "ticker": "AMZN",
-    "company": "亚马逊",
-    "sentiment": "neutral",
-    "summary": "AWS 保持稳定增长，但下季度 AI 基础设施资本支出上调引发市场短期观望。"
-  },
-  {
-    "ticker": "AAPL",
-    "company": "苹果",
-    "sentiment": "bullish",
-    "summary": "Apple Intelligence 全球多语言版上线，推动 iPhone 换机潮，稳定 VOO/QQQM 底盘。"
-  }
-]
+  "intel": [
+    {
+      "company": "微软",
+      "ticker": "MSFT",
+      "sentiment": "看涨",
+      "summary": "Azure 云业务增速超预期，AI Copilot 商业化进程加速。"
+    },
+    {
+      "company": "英伟达",
+      "ticker": "NVDA",
+      "sentiment": "看涨",
+      "summary": "Blackwell 架构芯片需求爆棚，数据中心营收再创新高。"
+    },
+    {
+      "company": "Meta",
+      "ticker": "META",
+      "sentiment": "看涨",
+      "summary": "广告业务 AI 推荐算法效率提升，现金流表现优异。"
+    },
+    {
+      "company": "亚马逊",
+      "ticker": "AMZN",
+      "sentiment": "中性",
+      "summary": "AWS 稳健增长，但下季度 AI 资本支出预期增加。"
+    }
+  ]
+}
