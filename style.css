@@ -6,7 +6,7 @@
 }
 
 body {
-    background-color: #0d1117;
+    background-color: #0b0d12;
     color: #c9d1d9;
     padding: 20px;
 }
@@ -16,14 +16,52 @@ body {
     margin: 0 auto;
 }
 
+/* 🌀 动态黑洞动画 Icon */
+.blackhole-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #000;
+    box-shadow: 0 0 12px 3px rgba(88, 166, 255, 0.8), 0 0 24px 6px rgba(163, 113, 247, 0.4);
+    position: relative;
+    animation: rotateBlackhole 10s linear infinite;
+    display: inline-block;
+}
+
+.blackhole-icon::after {
+    content: '';
+    position: absolute;
+    top: -3px; left: -3px; right: -3px; bottom: -3px;
+    border-radius: 50%;
+    border: 2px dashed rgba(88, 166, 255, 0.6);
+    animation: spinAccretion 6s linear infinite reverse;
+}
+
+@keyframes rotateBlackhole {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.05); }
+    100% { transform: rotate(360deg) scale(1); }
+}
+
+@keyframes spinAccretion {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 /* Header */
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding-bottom: 20px;
-    border-bottom: 1px solid #30363d;
+    border-bottom: 1px solid #21262d;
     margin-bottom: 24px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .logo h1 {
@@ -41,7 +79,7 @@ body {
 }
 
 .btn-import {
-    background-color: #21262d;
+    background-color: #161b22;
     border: 1px solid #30363d;
     color: #c9d1d9;
     padding: 8px 16px;
@@ -52,14 +90,14 @@ body {
 }
 
 .btn-import:hover {
-    background-color: #30363d;
+    background-color: #21262d;
     border-color: #8b949e;
 }
 
 /* Cards */
 .calculator-card, .table-card, .intel-card {
     background-color: #161b22;
-    border: 1px solid #30363d;
+    border: 1px solid #21262d;
     border-radius: 8px;
     padding: 20px;
     margin-bottom: 24px;
