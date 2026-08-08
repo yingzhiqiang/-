@@ -1,24 +1,75 @@
 {
-  "assetConfig": [
-    { "code": "VOO", "name": "标普500 ETF", "target": 40.0, "current": 17.4 },
-    { "code": "QQQM", "name": "纳斯达克100 ETF", "target": 35.0, "current": 70.1 },
-    { "code": "BOTZ", "name": "AI与机器人 ETF", "target": 15.0, "current": 7.4 },
-    { "code": "TQQQ", "name": "3倍做多纳指 ETF", "target": 5.0, "current": 5.1 }
-  ],
-  "intelReports": [
+  "portfolio": [
     {
-      "company": "微软 (MSFT)",
-      "tag": "看涨",
+      "ticker": "VOO",
+      "name": "标普500 ETF",
+      "target": 40.0,
+      "current": 25.3
+    },
+    {
+      "ticker": "QQQM",
+      "name": "纳斯达克100 ETF",
+      "target": 35.0,
+      "current": 58.0
+    },
+    {
+      "ticker": "BOTZ",
+      "name": "AI与机器人 ETF",
+      "target": 15.0,
+      "current": 12.5
+    },
+    {
+      "ticker": "TQQQ",
+      "name": "3倍做多纳指 ETF",
+      "target": 5.0,
+      "current": 4.2
+    }
+  ],
+  "market_data": {
+    "VOO": {
+      "price": "$710.71",
+      "wtd": "+0.61%",
+      "bullish": true
+    },
+    "QQQM": {
+      "price": "$297.70",
+      "wtd": "+1.17%",
+      "bullish": true
+    },
+    "BOTZ": {
+      "price": "$37.61",
+      "wtd": "+1.81%",
+      "bullish": true
+    },
+    "TQQQ": {
+      "price": "$74.47",
+      "wtd": "+3.39%",
+      "bullish": true
+    }
+  },
+  "intel": [
+    {
+      "company": "微软",
+      "ticker": "MSFT",
+      "sentiment": "看涨",
       "summary": "Azure 云业务增速超预期，AI Copilot 商业化进程加速。"
     },
     {
-      "company": "英伟达 (NVDA)",
-      "tag": "看涨",
+      "company": "英伟达",
+      "ticker": "NVDA",
+      "sentiment": "看涨",
       "summary": "Blackwell 架构芯片需求爆棚，数据中心营收再创新高。"
     },
     {
-      "company": "亚马逊 (AMZN)",
-      "tag": "中性",
+      "company": "Meta",
+      "ticker": "META",
+      "sentiment": "看涨",
+      "summary": "广告业务 AI 推荐算法效率提升，现金流表现优异。"
+    },
+    {
+      "company": "亚马逊",
+      "ticker": "AMZN",
+      "sentiment": "中性",
       "summary": "AWS 稳健增长，但下季度 AI 资本支出预期增加。"
     }
   ]
