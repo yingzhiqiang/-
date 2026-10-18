@@ -30,10 +30,10 @@ try:
     clean_json_str = response.text.replace("```json", "").replace("```", "").strip()
     data = json.loads(clean_json_str)
     
-    with open('earnings.json', 'w', encoding='utf-8') as f:
+    with open('ai_earnings.json', 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
         
-    print("✅ earnings.json 自动刷新成功！")
+    print("✅ ai_earnings.json 自动刷新成功！")
 except Exception as e:
     print("❌ 解析或写入失败:", e)
     exit(1)
