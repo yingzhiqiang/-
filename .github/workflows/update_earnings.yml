@@ -32,5 +32,5 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add earnings.json
+          git add ai_earnings.json
           git diff --quiet && git diff --staged --quiet || (git commit -m "bot: 自动更新美股巨头财报情报" && git push)
