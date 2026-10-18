@@ -24,7 +24,7 @@ prompt = """
 """
 
 try:
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    model = genai.GenerativeModel('gemini-3.5-flash-lite')
     response = model.generate_content(prompt)
 
     clean_json_str = response.text.replace("```json", "").replace("```", "").strip()
