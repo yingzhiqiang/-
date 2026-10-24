@@ -6,6 +6,9 @@ on:
     - cron: '0 0 * * 6'
   workflow_dispatch: # 允许在 GitHub 网页界面随时手动点击运行
 
+permissions:
+  contents: write
+
 jobs:
   update-intel:
     runs-on: ubuntu-latest
