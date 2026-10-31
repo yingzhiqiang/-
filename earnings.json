@@ -27,23 +27,23 @@
   ],
   "market_data": {
     "VOO": {
-      "price": "$698.58",
-      "wtd": "-0.53%",
+      "price": "$694.81",
+      "wtd": "-1.77%",
       "bullish": false
     },
     "QQQM": {
-      "price": "$290.06",
-      "wtd": "-0.02%",
+      "price": "$284.34",
+      "wtd": "-3.46%",
       "bullish": false
     },
     "BOTZ": {
-      "price": "$33.02",
-      "wtd": "+1.04%",
-      "bullish": true
+      "price": "$32.22",
+      "wtd": "-3.59%",
+      "bullish": false
     },
     "TQQQ": {
-      "price": "$66.29",
-      "wtd": "-0.20%",
+      "price": "$62.01",
+      "wtd": "-10.47%",
       "bullish": false
     }
   },
