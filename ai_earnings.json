@@ -1,0 +1,32 @@
+[
+  {
+    "ticker": "MSFT",
+    "company": "微软",
+    "sentiment": "bullish",
+    "summary": "云业务与AI商业化持续兑现，对VOO和QQQM形成强支撑，为TQQQ提供上行动能。"
+  },
+  {
+    "ticker": "NVDA",
+    "company": "英伟达",
+    "sentiment": "bullish",
+    "summary": "AI芯片需求依旧强劲， Blackwell架构出货顺利，是BOTZ和TQQQ的核心爆发引擎。"
+  },
+  {
+    "ticker": "META",
+    "company": "元平台",
+    "sentiment": "bullish",
+    "summary": "广告变现超预期且AI开源战略提升效率，利好VOO与QQQM的权重表现。"
+  },
+  {
+    "ticker": "AMZN",
+    "company": "亚马逊",
+    "sentiment": "bullish",
+    "summary": "AWS云增速回暖及电商利润率改善，进一步巩固了其在VOO和QQQM中的基本面优势。"
+  },
+  {
+    "ticker": "AAPL",
+    "company": "苹果",
+    "sentiment": "neutral",
+    "summary": "硬件换代周期温和，AI功能推迟削弱短期爆发力，对VOO及QQQM表现为窄幅震荡。"
+  }
+]
