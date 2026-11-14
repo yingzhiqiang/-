@@ -9,24 +9,24 @@
     "ticker": "NVDA",
     "company": "英伟达",
     "sentiment": "bullish",
-    "summary": "AI芯片需求依旧强劲， Blackwell架构出货顺利，是BOTZ和TQQQ的核心爆发引擎。"
+    "summary": "芯片需求依然强劲，AI算力霸主地位稳固，是BOTZ和TQQQ的核心引擎。"
   },
   {
     "ticker": "META",
-    "company": "元平台",
+    "company": "元宇宙",
     "sentiment": "bullish",
-    "summary": "广告变现超预期且AI开源战略提升效率，利好VOO与QQQM的权重表现。"
+    "summary": "广告主增长超预期且AI广告投放效率提升，利好QQQM和VOO的整体权重股表现。"
   },
   {
     "ticker": "AMZN",
     "company": "亚马逊",
     "sentiment": "bullish",
-    "summary": "AWS云增速回暖及电商利润率改善，进一步巩固了其在VOO和QQQM中的基本面优势。"
+    "summary": "AWS云增速回暖叠加电商利润率改善，进一步巩固VOO与QQQM的防御与进攻属性。"
   },
   {
     "ticker": "AAPL",
     "company": "苹果",
     "sentiment": "neutral",
-    "summary": "硬件换代周期温和，AI功能推迟削弱短期爆发力，对VOO及QQQM表现为窄幅震荡。"
+    "summary": "硬件创新周期缓慢但服务业务稳健，对VOO大盘构成稳定器，对高弹性TQQQ贡献有限。"
   }
 ]
